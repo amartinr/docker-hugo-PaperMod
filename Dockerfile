@@ -20,12 +20,14 @@ COPY ./entrypoint.sh /entrypoint.sh
 ENV THEME_URL="${THEME_URL:-https://github.com/adityatelange/hugo-PaperMod.git}"
 ENV THEME_NAME="${THEME_NAME:-PaperMod}"
 ENV THEME_FORMAT="${THEME_FORMAT:-yaml}"
-ENV SITE_DIRNAME="${SITE_DIRNAME:-blog}"
+ENV SITE_DIRNAME="${SITE_DIRNAME:-localhost}"
 ENV SITE_TITLE="${SITE_TITLE:-My personal blog}"
+ENV SITE_LANG="${SITE_LANG:-en-us}"
 ENV BASEDIR="${BASEDIR:-/srv/hugo}"
 ENV BASEURL="${BASEURL:-http://localhost}"
-ENV DEV_BASEURL="${DEV_BASEURL:-http://localhost}"
 ENV DEV_PORT="${DEV_PORT:-1314}"
+ENV APPEND_DEV_PORT="${APPEND_DEV_PORT:-false}"
+ENV DEV_BASEURL="${DEV_BASEURL:-http://localhost}"
 ENV LIVERELOAD_PORT="${DEV_PORT}"
 
 USER hugo

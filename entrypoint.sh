@@ -14,36 +14,30 @@ function hugo_init() {
         git submodule update --init --recursive
         if [ "$THEME_FORMAT" == "yaml" ]; then
             echo baseURL: $BASEURL | tee hugo.$THEME_FORMAT
-            if [ -n "$SITE_LANG" ]; then
-                echo languageCode: $SITE_LANG | tee -a hugo.$THEME_FORMAT
-            else
-                echo languageCode: en-us | tee -a hugo.$THEME_FORMAT
-            fi
+            echo languageCode: $SITE_LANG | tee -a hugo.$THEME_FORMAT
             echo theme: $THEME_NAME | tee -a hugo.$THEME_FORMAT
             echo title: $SITE_TITLE | tee -a hugo.$THEME_FORMAT
         fi
     fi
-    test -d $BASEDIR/devel || mkdir $BASEDIR/devel
     test -d $BASEDIR/prod || mkdir $BASEDIR/prod
+    test -d $BASEDIR/devel || mkdir $BASEDIR/devel
 }
 
 if [ "$1" == "hugo" ]; then
     if [ -n "$2" ]; then
-       if [ "$2" == "server" ]; then
+        if [ "$2" == "server" ]; then
             hugo_init
-            "$@" --logLevel debug -b $DEV_BASEURL -d $BASEDIR/devel -D --bind 0.0.0.0 --port $DEV_PORT --liveReloadPort $LIVERELOAD_PORT --disableFastRender --appendPort=false --source $BASEDIR/$SITE_DIRNAME &
-            exec "$@" --logLevel warn -b $BASEURL -e production --bind 0.0.0.0 --appendPort=false --disableLiveReload --source $BASEDIR/$SITE_DIRNAME --cleanDestinationDir -d $BASEDIR/prod
+            "$@" -e production --logLevel warn -b $BASEURL --appendPort=false --bind 0.0.0.0 --source $BASEDIR/$SITE_DIRNAME --cleanDestinationDir -d $BASEDIR/prod &
+            exec "$@" -e development --logLevel debug -b $DEV_BASEURL -D --bind 0.0.0.0 --port $DEV_PORT --liveReloadPort $LIVERELOAD_PORT --disableFastRender --appendPort=$APPEND_DEV_PORT --source $BASEDIR/$SITE_DIRNAME -d $BASEDIR/devel
+        elif [ "$2" == "build" ]; then
+            hugo_init
+            exec hugo build --logLevel warn -b $BASEURL -e production --source $BASEDIR/$SITE_DIRNAME --cleanDestinationDir -d $BASEDIR/prod
         else
             exec "$@"
         fi
     else
         hugo_init
-        test -d $BASEDIR/devel || mkdir -p $BASEDIR/devel
-        echo "Building development site at $DEV_BASEURL..."
-        "$@" -b $DEV_BASEURL -d $BASEDIR/devel --disableFastRender ---source $BASEDIR/$SITE_DIRNAME &
-        test -d $BASEDIR/prod || mkdir -p $BASEDIR/prod
-        echo "Building production site at $BASEURL..."
-        exec "$@" -b $BASEURL -e production --disableLiveReload --source $BASEDIR/$SITE_DIRNAME --cleanDestinationDir -d $BASEDIR/prod
+        exec hugo build --logLevel warn -b $BASEURL -e production --source $BASEDIR/$SITE_DIRNAME --cleanDestinationDir -d $BASEDIR/prod
     fi
 else
     exec "$@"
