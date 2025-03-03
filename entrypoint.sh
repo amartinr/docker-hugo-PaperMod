@@ -25,10 +25,10 @@ function hugo_init() {
 
 function hugo_build() {
     exec hugo build \
-        --logLevel warn -b $BASEURL
+        --logLevel warn -b $BASEURL \
         -e production \
         --source $BASEDIR/$SITE_DIRNAME \
-        --minify --templateMetrics \
+        --minify \
         --cleanDestinationDir -d $BASEDIR/prod
 }
 
