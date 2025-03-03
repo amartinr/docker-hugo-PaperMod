@@ -9,8 +9,7 @@ function hugo_init() {
             hugo new site $SITE_DIRNAME --force
         fi
         cd $BASEDIR/$SITE_DIRNAME
-        THEME_REPO=${THEME_URL##*/}
-        THEME_NAME=${THEME_REPO##*-}
+        THEME_NAME=${THEME_URL##*/}
         git init
         git submodule add --depth=1 $THEME_URL themes/$THEME_NAME
         git submodule update --init --recursive
