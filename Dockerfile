@@ -18,7 +18,6 @@ RUN apk add --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community hu
 COPY ./entrypoint.sh /entrypoint.sh
 
 ENV THEME_URL="${THEME_URL:-https://github.com/adityatelange/hugo-PaperMod.git}"
-ENV THEME_NAME="${THEME_NAME:-PaperMod}"
 ENV THEME_FORMAT="${THEME_FORMAT:-yaml}"
 ENV SITE_DIRNAME="${SITE_DIRNAME:-localhost}"
 ENV SITE_TITLE="${SITE_TITLE:-My personal blog}"
