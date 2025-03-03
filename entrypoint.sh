@@ -23,21 +23,37 @@ function hugo_init() {
     test -d $BASEDIR/devel || mkdir $BASEDIR/devel
 }
 
+function hugo_build() {
+    exec hugo build \
+        --logLevel warn -b $BASEURL
+        -e production \
+        --source $BASEDIR/$SITE_DIRNAME \
+        --minify --templateMetrics \
+        --cleanDestinationDir -d $BASEDIR/prod
+}
+
 if [ "$1" == "hugo" ]; then
     if [ -n "$2" ]; then
         if [ "$2" == "server" ]; then
             hugo_init
-            "$@" -e production --logLevel warn -b $BASEURL --appendPort=false --bind 0.0.0.0 --source $BASEDIR/$SITE_DIRNAME --cleanDestinationDir -d $BASEDIR/prod &
-            exec "$@" -e development --logLevel debug -b $DEV_BASEURL -D --bind 0.0.0.0 --port $DEV_PORT --liveReloadPort $LIVERELOAD_PORT --disableFastRender --appendPort=$APPEND_DEV_PORT --source $BASEDIR/$SITE_DIRNAME -d $BASEDIR/devel
+            exec "$@" -e development \
+                --logLevel debug -b $DEV_BASEURL -D \
+                --bind 0.0.0.0 \
+                --port $DEV_PORT \
+                --liveReloadPort $LIVERELOAD_PORT \
+                --disableFastRender \
+                --appendPort=$APPEND_DEV_PORT \
+                --source $BASEDIR/$SITE_DIRNAME \
+                -d $BASEDIR/devel
         elif [ "$2" == "build" ]; then
             hugo_init
-            exec hugo build --logLevel warn -b $BASEURL -e production --source $BASEDIR/$SITE_DIRNAME --cleanDestinationDir -d $BASEDIR/prod
+            hugo_build
         else
             exec "$@"
         fi
     else
         hugo_init
-        exec hugo build --logLevel warn -b $BASEURL -e production --source $BASEDIR/$SITE_DIRNAME --cleanDestinationDir -d $BASEDIR/prod
+        hugo_build
     fi
 else
     exec "$@"
