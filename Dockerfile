@@ -14,7 +14,8 @@ RUN adduser \
         hugo;
 
 RUN apk add --no-cache git
-RUN apk add --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community hugo && rm -rf /var/cache/apk/*
+RUN apk add --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community hugo
+RUN wget https://github.com/sass/dart-sass/releases/download/1.85.1/dart-sass-1.85.1-linux-arm64-musl.tar.gz -O - | tar  -C /usr/local/bin --strip-components=1 -zx -f -
 COPY ./entrypoint.sh /entrypoint.sh
 
 ENV THEME_URL="${THEME_URL:-https://github.com/adityatelange/hugo-PaperMod.git}"
